@@ -1,4 +1,4 @@
-desc 'parses csv file'
+desc 'parses file'
 namespace :sort do
   desc 'parse a csv file'
   task :csv do
@@ -10,7 +10,7 @@ namespace :sort do
     normalize_psv(parse('pipe.txt', '|'))
     # parse('pipe.txt', '|')
   end
-  
+
   desc 'parse a space delimited file'
   task :ssv do
     normalize_ssv(parse('space.txt', ' '))
@@ -22,61 +22,36 @@ namespace :sort do
 
   desc 'combines of all files'
   task :combine do
-    combine(normalize_csv(parse('comma.txt', ',')), normalize_psv(parse('pipe.txt', '|')), normalize_ssv(parse('space.txt', ' ')))
+    combine(normalize(parse('comma.txt', ','), "c"), normalize(parse('pipe.txt', '|'), "p"), normalize(parse('space.txt', ' '), "s"))
   end
-  
+
   desc 'normalize data in the array to get it ready to output'
   task :normalize do
     normalize(array)
   end
 end
 
-def normalize_csv(array)
+def normalize(array, delimiter)
   array.each do |s|
     s.each do |t|
       t.gsub!("-", "/")
       t.gsub!("\n", "")
     end
-    s.push(s.slice!(3))
-  end
-  # p array
-  return array
-end
+    if delimiter == "p"
+      s.push(s.slice!(4))
+    end
 
-def normalize_psv(array)
-  array.each do |s|
-    s.each do |t|
-      t.gsub!("-", "/")
-      t.gsub!("\n", "")
+    if delimiter == "p" || delimiter == "s"
+     if s[3] == "F"
+       s[3] = "Female"
+      elsif s[3] == "M"
+        s[3] = "Male"
+      end
+      s.delete_at(2)
+    elsif delimiter == "c"
+      s.push(s.slice!(3))
     end
-    s.push(s.slice!(4))
-    s[3]
-    if s[3] == "F"
-      s[3] = "Female"
-    elsif s[3] == "M"
-      s[3] = "Male"
-    end
-    s.delete_at(2)
   end
-  # p array
-  return array
-end
-
-def normalize_ssv(array)
-  array.each do |s|
-    s.each do |t|
-      t.gsub!("-", "/")
-      t.gsub!("\n", "")
-    end
-    s[3]
-    if s[3] == "F"
-      s[3] = "Female"
-    elsif s[3] == "M"
-      s[3] = "Male"
-    end
-    s.delete_at(2)
-  end
-  # p array
   return array
 end
 
@@ -93,58 +68,50 @@ def combine(array1, array2, array3)
   array3.each do |s|
     array.push(s)
   end
-  
-  array = sort(array)
-  # p array
-  p 'sort one '
+
+  sort(array, 1)
+  p 'Output 1'
   array.each do |s|
     p s
   end
 
-  array = sortTaskTwo(array)
-  # p array
-  p 'sort two '
+  sort(array, 3)
+  p 'Output 2'
   array.each do |s|
     p s
   end
 
-  array = sortTaskThree(array)
-  p 'sort three '
+  sort(array, 2)
+  p 'Output 3'
   array.each do |s|
     p s
   end
 end
 
 def parse(file, type)
-  regex = "[#{type} ]+"
+  regex = %r"[#{type} ]+"
   unsortedFile = File.new(file, 'r')
   _string = String.new(unsortedFile.read)
-  regex = Regexp.new(regex)
   array = Array.new
   _string.each_line() do |line|
-    # puts "#{line}"
     array.push(line.split(regex))
-  end  
-  # p array
-  array = sort(array)
+  end
   return array
 end
 
-def sort(array)
-  array.sort_by! do |x|
-    [x[2],x[0]]
+def sort(array, type)
+  if type == 1
+    array.sort_by! do |x|
+      [x[2],x[0]]
+    end
+  else
+    array.sort! do |x, y|
+      if type == 3
+        Date::strptime(x[3], '%m/%d/%Y') <=> Date::strptime(y[3], '%m/%d/%Y')
+      elsif type == 2
+        y[0] <=> x[0]
+      end
+    end
   end
-  # p array
 end
 
-def sortTaskTwo(array)
-  array.sort! do |x, y|
-    y[0] <=> x[0]
-  end
-end
-
-def sortTaskThree(array)
-  array.sort! do |x, y|
-    Date::strptime(x[3], '%m/%d/%Y') <=> Date::strptime(y[3], '%m/%d/%Y')
-  end
-end
