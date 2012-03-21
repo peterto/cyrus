@@ -3,7 +3,9 @@ require 'rake'
 
 describe 'stuff' do
   before do
-    load File.expand_path("../../../Rakefile", __FILE__)
+    @rake = Rake::Application.new
+    Rake.application = @rake
+    Rake.application.rake_require "tasks/foo"
     Rake::Task.define_task(:environment)
   end
 
