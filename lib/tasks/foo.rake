@@ -30,34 +30,24 @@ def normalize(array, delimiter)
   return array
 end
 
-def combine (*arrays)
+def combine(*arrays)
   array = Array.new
   arrays.each do |x|
     array += x
   end
+
+  output(array, 1)
+  output(array, 2)
+  output(array, 3)
+
+end
+
+def output(array, type)
   f = File.new("outputs.txt", "w+")
 
-  sort(array, 1)
-  p 'Output 1:'
-  f << "Output 1:\n"
-  array.each do |s|
-    p s * " "
-    f << s * " " << "\n"
-  end
-  f << "\n"
-
-  sort(array, 2)
-  p 'Output 2:'
-  f << "Output 2:\n"
-  array.each do |s|
-    p s * " "
-    f << s * " " << "\n"
-  end
-  f << "\n"
-
-  sort(array, 3)
-  p 'Output 3:'
-  f << "Output 3:\n"
+  sort(array, type)
+  p "Output #{type}:"
+  f << "Output #{type}:\n"
   array.each do |s|
     p s * " "
     f << s * " " << "\n"
