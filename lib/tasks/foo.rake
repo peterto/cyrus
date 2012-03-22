@@ -30,8 +30,11 @@ def normalize(array, delimiter)
   return array
 end
 
-def combine(array1, array2, array3)
-  array = array1 + array2 + array3
+def combine (*arrays)
+  array = Array.new
+  arrays.each do |x|
+    array += x
+  end
   f = File.new("outputs.txt", "w+")
 
   sort(array, 1)
