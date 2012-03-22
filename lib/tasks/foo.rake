@@ -1,7 +1,7 @@
 desc 'parses file'
 namespace :sort do
-  desc 'combines of all files'
-  task :combine do
+  desc 'combines of all files and outputs a new one 3 different ways'
+  task :output do
     combine(normalize(parse('comma.txt', ','), "c"), normalize(parse('pipe.txt', '|'), "p"), normalize(parse('space.txt', ' '), "s"))
   end
 end
@@ -43,7 +43,7 @@ def combine(*arrays)
 end
 
 def output(array, type)
-  f = File.new("outputs.txt", "w+")
+  f = File.new("output.txt", "w+")
 
   sort(array, type)
   p "Output #{type}:"
