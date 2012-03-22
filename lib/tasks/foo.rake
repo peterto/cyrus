@@ -1,33 +1,8 @@
 desc 'parses file'
 namespace :sort do
-  desc 'parse a csv file'
-  task :csv do
-    normalize_csv(parse('comma.txt', ','))
-  end
-
-  desc 'parse a pipe delimited file'
-  task :psv do
-    normalize_psv(parse('pipe.txt', '|'))
-    # parse('pipe.txt', '|')
-  end
-
-  desc 'parse a space delimited file'
-  task :ssv do
-    normalize_ssv(parse('space.txt', ' '))
-    # parse('space.txt', ' ')
-  end
-
-  desc 'parses all the files'
-  task :all => [:csv, :psv, :ssv]
-
   desc 'combines of all files'
   task :combine do
     combine(normalize(parse('comma.txt', ','), "c"), normalize(parse('pipe.txt', '|'), "p"), normalize(parse('space.txt', ' '), "s"))
-  end
-
-  desc 'normalize data in the array to get it ready to output'
-  task :normalize do
-    normalize(array)
   end
 end
 
@@ -56,36 +31,36 @@ def normalize(array, delimiter)
 end
 
 def combine(array1, array2, array3)
-  array = Array.new
-  array1.each do |s|
-    array.push(s)
-  end
-
-  array2.each do |s|
-    array.push(s)
-  end
-
-  array3.each do |s|
-    array.push(s)
-  end
+  array = array1 + array2 + array3
+  f = File.new("outputs.txt", "w+")
 
   sort(array, 1)
-  p 'Output 1'
+  p 'Output 1:'
+  f << "Output 1:\n"
   array.each do |s|
-    p s
+    p s * " "
+    f << s * " " << "\n"
   end
-
-  sort(array, 3)
-  p 'Output 2'
-  array.each do |s|
-    p s
-  end
+  f << "\n"
 
   sort(array, 2)
-  p 'Output 3'
+  p 'Output 2:'
+  f << "Output 2:\n"
   array.each do |s|
-    p s
+    p s * " "
+    f << s * " " << "\n"
   end
+  f << "\n"
+
+  sort(array, 3)
+  p 'Output 3:'
+  f << "Output 3:\n"
+  array.each do |s|
+    p s * " "
+    f << s * " " << "\n"
+  end
+  f << "\n"
+
 end
 
 def parse(file, type)
@@ -100,16 +75,16 @@ def parse(file, type)
 end
 
 def sort(array, type)
-  if type == 1
-    array.sort_by! do |x|
-      [x[2],x[0]]
+  if type == 3
+    array.sort! do |x, y|
+      y[0] <=> x[0]
     end
   else
-    array.sort! do |x, y|
-      if type == 3
-        Date::strptime(x[3], '%m/%d/%Y') <=> Date::strptime(y[3], '%m/%d/%Y')
+    array.sort_by! do |x|
+      if type == 1
+        [x[2], x[0]]
       elsif type == 2
-        y[0] <=> x[0]
+        [Date::strptime(x[3], '%m/%d/%Y'), x[0]]
       end
     end
   end
