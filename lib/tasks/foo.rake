@@ -5,7 +5,6 @@ file 'output.txt' => ['comma.txt','pipe.txt','space.txt'] do |t|
     array.push(FileParse.normalize(FileParse.parse(file), file.slice(0)))
   end
   (1..3).each do |t|
-    p t
     FileParse.output(FileParse.combine(array), t)
   end
 end
@@ -46,20 +45,16 @@ class FileParse
       end
     end
     return array 
-    # output(array, 1)
-    # output(array, 2)
-    # output(array, 3)
-
   end
 
   # Creates an output of a given array and output type
   def self.output(array, type)
     f = File.new('output.txt', 'a+')
     sort(array, type)
-    p "Output #{type}:"
+    # p "Output #{type}:"
     f.puts "Output #{type}:\n"
     array.each do |s|
-      p s * " "
+      # p s * " "
       f.puts s * " "
     end
     f.puts "\n"
