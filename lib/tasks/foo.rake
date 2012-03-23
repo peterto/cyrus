@@ -1,8 +1,12 @@
 desc 'parses file'
 namespace :sort do
   desc 'combines of all files and outputs a new one 3 different ways'
-  task :output do
-    FileParse.combine(FileParse.normalize(FileParse.parse('comma.txt', ','), "c"), FileParse.normalize(FileParse.parse('pipe.txt', '|'), "p"), FileParse.normalize(FileParse.parse('space.txt', ' '), "s"))
+  file 'output.txt' => ['comma.txt','pipe.txt','space.txt'] do |t|
+    array = Array.new
+    t.prerequisites.each do |file|
+      array.push(FileParse.parse(file))
+    end
+    FileParse.combine(array)
   end
 end
 
@@ -34,12 +38,11 @@ class FileParse
   def self.combine(*arrays)
     array = Array.new
     arrays.each do |x|
-      array += x
+      x.each do |y|
+        array += y
+      end
     end
-     
-    if File.exists?('output.txt')
-      File.delete('output.txt')
-    end
+    
     output(array, 1)
     output(array, 2)
     output(array, 3)
@@ -59,14 +62,15 @@ class FileParse
     f.close
   end
 
-  def self.parse(file, type)
-    regex = %r"[#{type} ]+"
+  def self.parse(file)
+    regex = %r"[\s|\||, ]+"
     unsortedFile = File.new(file, 'r')
     _string = String.new(unsortedFile.read)
     array = Array.new
     _string.each_line() do |line|
       array.push(line.split(regex))
     end
+    normalize(array, file.slice(0))
     return array
   end
 
@@ -85,5 +89,6 @@ class FileParse
       end
     end
   end
+
 end
 
