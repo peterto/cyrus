@@ -37,35 +37,51 @@ describe 'sort' do
     end
 
     it "should normalize an array" do
-      @comma = FileParse.normalize(@comma, 'c')
-      @pipe = FileParse.normalize(@pipe, 'p')
-      @space = FileParse.normalize(@space, 's')
+      comma = FileParse.normalize(@comma, 'c')
+      pipe = FileParse.normalize(@pipe, 'p')
+      space = FileParse.normalize(@space, 's')
 
-      @comma.length.should == 3
-      @pipe.length.should == 3
-      @space.length.should == 3
+      comma.length.should == 3
+      pipe.length.should == 3
+      space.length.should == 3
 
-      @comma.should be_an_instance_of Array
-      @pipe.should be_an_instance_of Array
-      @space.should be_an_instance_of Array
+      comma.should be_an_instance_of Array
+      pipe.should be_an_instance_of Array
+      space.should be_an_instance_of Array
     end
 
     it "should combine 3 arrays" do
-      @comma = FileParse.normalize(@comma, 'c')
-      @pipe = FileParse.normalize(@pipe, 'p')
-      @space = FileParse.normalize(@space, 's')
-      array = FileParse.combine(@comma, @pipe, @space)
+      comma = FileParse.normalize(@comma, 'c')
+      pipe = FileParse.normalize(@pipe, 'p')
+      space = FileParse.normalize(@space, 's')
+      array = Array.new
+      array.push(comma).push(pipe).push(space)
+      array = FileParse.combine(array)
 
       array.should be_an_instance_of Array
       array.length.should == 9
     end
 
-    it "should output a file" do
-
-    end
-
     it "should sort an array" do
+      comma = FileParse.normalize(@comma, 'c')
+      pipe = FileParse.normalize(@pipe, 'p')
+      space = FileParse.normalize(@space, 's')
+      array = Array.new
+      array.push(comma).push(pipe).push(space)
+      array = FileParse.combine(array)
 
+      array2 = FileParse.sort(array, 1)
+
+      array.should_not == array2
+      
     end
-  end
+
+    it "should output a file" do
+      comma = FileParse.normalize(@comma, 'c')
+      pipe = FileParse.normalize(@pipe, 'p')
+      space = FileParse.normalize(@space, 's')
+      array = FileParse.combine(comma, pipe, space)
+    end
+
+ end
 end
