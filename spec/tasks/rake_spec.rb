@@ -30,12 +30,17 @@ describe 'sort' do
       Rake.application.invoke_task 'output.txt'
     end
 
+    it "should parses a file" do
+      @comma.should be_an_instance_of Array
+      @pipe.should be_an_instance_of Array
+      @space.should be_an_instance_of Array
+    end
+
     it "should normalize an array" do
-      
       @comma = FileParse.normalize(@comma, 'c')
       @pipe = FileParse.normalize(@pipe, 'p')
       @space = FileParse.normalize(@space, 's')
-      
+
       @comma.length.should == 3
       @pipe.length.should == 3
       @space.length.should == 3
@@ -45,9 +50,14 @@ describe 'sort' do
       @space.should be_an_instance_of Array
     end
 
-    it "should combines 3 arrays" do
-      # FileParse.should_receive(:combine).once
-      # run_task
+    it "should combine 3 arrays" do
+      @comma = FileParse.normalize(@comma, 'c')
+      @pipe = FileParse.normalize(@pipe, 'p')
+      @space = FileParse.normalize(@space, 's')
+      array = FileParse.combine(@comma, @pipe, @space)
+
+      array.should be_an_instance_of Array
+      array.length.should == 9
     end
 
     it "should output a file" do
@@ -57,14 +67,5 @@ describe 'sort' do
     it "should sort an array" do
 
     end
-
-    it "should parses a file" do
-      # FileParse.should_receive(:parse).exactly(3).times
-      @comma.should be_an_instance_of Array
-      @pipe.should be_an_instance_of Array
-      @space.should be_an_instance_of Array
-      # run_task
-    end
-
   end
 end

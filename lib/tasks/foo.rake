@@ -11,6 +11,18 @@ end
 
 class FileParse
 
+  # turns a file into an array of arrays
+  def self.parse(file)
+    regex = %r"[\s|\||, ]+"
+    unsortedFile = File.new(file, 'r')
+    _string = String.new(unsortedFile.read)
+    array = Array.new
+    _string.each_line() do |line|
+      array.push(line.split(regex))
+    end
+    return array
+  end
+
   # normalizes arrays to make them all have the same structure
   def self.normalize(array, delimiter)
     array.each do |s|
@@ -47,32 +59,6 @@ class FileParse
     return array 
   end
 
-  # Creates an output of a given array and output type
-  def self.output(array, type)
-    f = File.new('output.txt', 'a+')
-    sort(array, type)
-    # p "Output #{type}:"
-    f.puts "Output #{type}:\n"
-    array.each do |s|
-      # p s * " "
-      f.puts s * " "
-    end
-    f.puts "\n"
-    f.close
-  end
-  
-  # turns a file into an array of arrays
-  def self.parse(file)
-    regex = %r"[\s|\||, ]+"
-    unsortedFile = File.new(file, 'r')
-    _string = String.new(unsortedFile.read)
-    array = Array.new
-    _string.each_line() do |line|
-      array.push(line.split(regex))
-    end
-    return array
-  end
-
   # sorts file given an output type
   def self.sort(array, type)
     if type == 3
@@ -88,6 +74,20 @@ class FileParse
         end
       end
     end
+  end
+
+  # creates an output of a given array and output type
+  def self.output(array, type)
+    f = File.new('output.txt', 'a+')
+    sort(array, type)
+    # p "Output #{type}:"
+    f.puts "Output #{type}:\n"
+    array.each do |s|
+      # p s * " "
+      f.puts s * " "
+    end
+    f.puts "\n"
+    f.close
   end
 
 end
