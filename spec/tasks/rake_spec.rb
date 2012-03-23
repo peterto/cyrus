@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'namespace sort' do
+describe 'sort' do
   
   before do
     @rake = Rake::Application.new
@@ -13,8 +13,12 @@ describe 'namespace sort' do
     Rake.application = nil
   end
 
-  describe 'sort:output' do
+  describe 'output.txt' do
     before do
+      @comma = FileParse.parse('comma.txt')
+      @pipe = FileParse.parse('pipe.txt')
+      @space = FileParse.parse('space.txt')
+
       FileParse.stub(:normalize)
       FileParse.stub(:combine)
       FileParse.stub(:output)
@@ -23,14 +27,9 @@ describe 'namespace sort' do
     end
 
     let :run_task do
-      Rake.application.invoke_task "sort:output"
+      Rake.application.invoke_task 'output.txt'
     end
 
-    it "should normalize a file" do
-      FileParse.should_receive(:normalize).exactly(3).times
-      run_task
-    end
-    
     it "should combines 3 arrays" do
       FileParse.should_receive(:combine).once
       run_task
@@ -38,6 +37,9 @@ describe 'namespace sort' do
 
     it "should parses a file" do
       FileParse.should_receive(:parse).exactly(3).times
+      @comma.should be_an_instance_of Array
+      @pipe.should be_an_instance_of Array
+      @space.should be_an_instance_of Array
       run_task
     end
 

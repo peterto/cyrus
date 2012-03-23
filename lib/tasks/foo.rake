@@ -1,16 +1,15 @@
-desc 'parses file'
-namespace :sort do
-  desc 'combines of all files and outputs a new one 3 different ways'
-  file 'output.txt' => ['comma.txt','pipe.txt','space.txt'] do |t|
-    array = Array.new
-    t.prerequisites.each do |file|
-      array.push(FileParse.parse(file))
-    end
-    FileParse.combine(array)
+desc 'combines of all files and outputs a new one 3 different ways'
+file 'output.txt' => ['comma.txt','pipe.txt','space.txt'] do |t|
+  array = Array.new
+  t.prerequisites.each do |file|
+    array.push(FileParse.normalize(FileParse.parse(file), file.slice(0)))
   end
+  FileParse.combine(array)
 end
 
 class FileParse
+
+  # normalizes arrays to make them all have the same structure
   def self.normalize(array, delimiter)
     array.each do |s|
       s.each do |t|
@@ -35,6 +34,7 @@ class FileParse
     return array
   end
 
+  # combines 3 arrays
   def self.combine(*arrays)
     array = Array.new
     arrays.each do |x|
@@ -49,6 +49,7 @@ class FileParse
 
   end
 
+  # Creates an output of a given array and output type
   def self.output(array, type)
     f = File.new('output.txt', 'a+')
     sort(array, type)
@@ -61,7 +62,8 @@ class FileParse
     f.puts "\n"
     f.close
   end
-
+  
+  # turns a file into an array of arrays
   def self.parse(file)
     regex = %r"[\s|\||, ]+"
     unsortedFile = File.new(file, 'r')
@@ -70,10 +72,10 @@ class FileParse
     _string.each_line() do |line|
       array.push(line.split(regex))
     end
-    normalize(array, file.slice(0))
     return array
   end
 
+  # sorts file given an output type
   def self.sort(array, type)
     if type == 3
       array.sort! do |x, y|
