@@ -4,7 +4,10 @@ file 'output.txt' => ['comma.txt','pipe.txt','space.txt'] do |t|
   t.prerequisites.each do |file|
     array.push(FileParse.normalize(FileParse.parse(file), file.slice(0)))
   end
-  FileParse.combine(array)
+  (1..3).each do |t|
+    p t
+    FileParse.output(FileParse.combine(array), t)
+  end
 end
 
 class FileParse
@@ -42,10 +45,10 @@ class FileParse
         array += y
       end
     end
-    
-    output(array, 1)
-    output(array, 2)
-    output(array, 3)
+    return array 
+    # output(array, 1)
+    # output(array, 2)
+    # output(array, 3)
 
   end
 
