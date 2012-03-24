@@ -1,4 +1,5 @@
 require 'rake'
+require 'Date'
 
 RSpec.configure do |config|
 

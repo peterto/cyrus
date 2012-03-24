@@ -69,8 +69,9 @@ describe 'sort' do
       array = Array.new
       array.push(comma).push(pipe).push(space)
       array = FileParse.combine(array)
-
-      array2 = FileParse.sort(array, 1)
+      
+      array2 = Array.new
+      array2 = FileParse.sort(array, 2)
 
       array.should_not == array2
       
